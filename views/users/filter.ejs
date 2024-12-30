@@ -1,0 +1,20 @@
+<% layout("/layouts/boilerplate") %>
+
+<h2>Listings for "<%= category %>"</h2>
+
+<div class="row row-cols-lg-4 row-cols-md-2 row-cols-sm-1 mt-3">
+  <% for (let listing of filteredListings) { %>
+    <div class="card col listing-card">
+      <a href="/listings/<%= listing._id %>" class="listing-links">
+        <img src="<%= listing.image.url %>" class="card-img-top" alt="listing-images" style="height: 20rem;">
+        <div class="card-body">
+          <p class="card-text">
+            <b><%= listing.title %></b>
+            <br>
+            &#8377; <%= listing.price.toLocaleString("en-IN") %> / night
+          </p>
+        </div>
+      </a>
+    </div>
+  <% } %>
+</div>

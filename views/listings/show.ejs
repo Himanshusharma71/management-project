@@ -1,0 +1,263 @@
+<% layout("/layouts/boilerplate")%>
+<script>
+  const mapToken="<%= process.env.MAP_TOKEN %>";
+  const listing=<%- JSON.stringify(listing) %>;
+</script>
+
+  <div class="row mt-3">
+      <div class="col-8 offset-3">
+    <h3><%= listing.title %> </h3>
+    </div> 
+    <div class="card col-6 offset-3 show-card listing-card">
+        <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing images">
+          <div class="card-body">
+            <p class="card-text">
+              <i>
+                <%= listing.owner.username %>
+              </i> </p>
+            <p class="card-text"><%= listing.description %> </p>
+            <p class="card-text">&#8377; <%= listing.price.toLocaleString("en-IN") %></p>
+            <p class="card-text"><%= listing.location %> </p>
+            <p class="card-text"><%= listing.country %> </p>
+          </div>
+    </div>
+    <br />
+
+    <% if(currUser && listing.owner._id.equals(currUser._id)) { %>
+      <div class="btns">
+      <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col- offset-3 edit-btn">Edit</a>
+      <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE">
+        <button class="btn btn-dark offset-5">Delete</button>
+      </form>
+      </div>
+    <%}%>
+    <div class="d-grid gap-2">
+      <div class="d-grid gap-2">
+        <button class="btn btn-dark book-btn" type="button" data-bs-toggle="modal" data-bs-target="#bookingModal">Book-Now</button>
+      </div>
+      
+      <!-- Modal Structure -->
+      <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="bookingModalLabel">Booking Form</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="bookingForm">
+
+                <div class="container mt-5 W-54">
+                      <h3 class="card-title text-center mb-4">Reservation Form</h3>
+                          <!-- Full Name -->
+                          <div class="mb-3">
+                              <label for="full-name" class="form-label">Your full name?</label>
+                              <input type="text" class="form-control" id="full-name" name="full-name" placeholder="Enter your full name">
+                          </div>
+              
+                          <!-- Email -->
+                          <div class="mb-3">
+                              <label for="email" class="form-label">Your email address?</label>
+                              <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address">
+                          </div>
+              
+                          <!-- Number of People -->
+                          <div class="mb-3">
+                              <label for="people" class="form-label">How many people?</label>
+                              <select class="form-select" id="people" name="people">
+                                  <option value="1">1 Person</option>
+                                  <option value="2">2 People</option>
+                                  <option value="3">3 People</option>
+                                  <option value="4">4 People</option>
+                              </select>
+                          </div>
+              
+                          <!-- ID Type -->
+                          <div class="mb-3">
+                              <label for="id-type" class="form-label">Select your ID</label>
+                              <select class="form-select" id="id-type" name="id-type">
+                                  <option value="1">Aadhar Card</option>
+                                  <option value="2">PAN Card</option>
+                                  <option value="3">Driving License</option>
+                              </select>
+                          </div>
+              
+                          <!-- Preferred Arrival Time -->
+                          <div class="mb-3">
+                              <label for="time" class="form-label">Preferred time of arrival?</label>
+                              <input type="text" class="form-control" id="time" name="time" placeholder="Enter your preferred arrival time (e.g., 3:00 PM)">
+                          </div>
+              
+                          <!-- Dates -->
+                          <div class="row mb-3">
+                              <div class="col-md-6">
+                                  <label for="check-in-date" class="form-label">Check-in date</label>
+                                  <input type="date" class="form-control" id="check-in-date" name="check-in-date">
+                              </div>
+                              <div class="col-md-6">
+                                  <label for="check-out-date" class="form-label">Check-out date</label>
+                                  <input type="date" class="form-control" id="check-out-date" name="check-out-date">
+                              </div>
+                          </div>
+              
+                          <!-- Phone Number -->
+                          <div class="mb-3">
+                              <label for="phone" class="form-label">Your phone number?</label>
+                              <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number (e.g., 9876543210)">
+                          </div>
+              
+                          <!-- Payment Option -->
+                          <div class="mb-3">
+                              <label for="payment-method" class="form-label">Payment Method</label>
+                              <select class="form-select" id="payment-method" name="payment-method">
+                                  <option value="credit-card">Credit Card</option>
+                                  <option value="debit-card">Debit Card</option>
+                                  <option value="upi">UPI</option>
+                                  <option value="net-banking">Net Banking</option>
+                              </select>
+                          </div>
+              
+                          <!-- Submit Button -->
+                          <div class="text-center">
+                              <button type="submit" class="btn btn-primary w-100">Submit</button>
+                          </div>
+                  </di>
+
+      
+                <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- review form  -->
+    <div class="col-8 offset-3 mb-3">
+      <% if(currUser ) { %>
+        <hr>
+      <h4>Leave a Review</h4>
+      <form action="/listings/<%=listing._id %>/reviews" 
+        method="POST"
+        novalidate 
+        class="needs-validation" >
+        <!-- <div class="mb-3 mt-3">
+          <label for="rating" class="form-label">Rating</label>
+          <input type="range" min="1" max="5" id="rating" name="review[rating]" class="form-range" />
+        </div> -->
+        <div class="mb-3 mt-3">
+          <label for="rating" class="form-label">Rating</label>
+          <fieldset class="starability-slot">
+            
+            <input type="radio"
+             id="no-rate"
+            class="input-no-rate"
+             name="review[rating]" value="0" 
+             checked 
+              aria-label="No rating." />
+            <input type="radio"
+             id="first-rate1"
+             name="review[rating]"
+             value="1"
+             />
+            <label for="first-rate1" title="Terrible">1 star</label>
+            <input type="radio"
+             id="first-rate2"
+             name="review[rating]"
+             value="2"
+             />
+            <label for="first-rate2" title="Not good">2 stars</label>
+            <input type="radio"
+             id="first-rate3"
+             name="review[rating]"
+             value="3"
+             />
+            <label for="first-rate3" title="Average">3 stars</label>
+            <input type="radio"
+             id="first-rate4"
+             name="review[rating]"
+             value="4"
+             />
+            <label for="first-rate4" title="Very good">4 stars</label>
+            <input type="radio"
+             id="first-rate5"
+             name="review[rating]"
+             value="5"
+             />
+            <label for="first-rate5" title="Amazing">5 stars</label>
+          </fieldset>
+        </div>
+        <div class="mb-3 mt-3">
+          <label for="comment" class="form-label">Comments</label>
+          <textarea name="review[comment]" id="comment" cols="20" rows="5"class="form-control" required></textarea>
+          <div class="invalid-feedback">Please add some comment </div>
+        </div>
+        <button class="btn btn-outline-dark">Submit</button>
+      </form>
+      <% } %>
+      <!-- <ul>
+        <% for(review of listing.reviews){
+          %>
+          <li>  <%=review.comment%> , <%= review.rating%> </li> 
+          <% } %>
+        </ul> -->
+       <% if(listing.reviews.length > 0) { %>
+        <div class="row">
+          <h4>All reviews</h4>
+          <% for(review of listing.reviews){ %>
+            <div class="card col-3 ms-3 mb-3">
+              <div class="card-body">
+                <h5 class="card-title">@<%= review.author.username %></h5>
+                <p class="starability-result card-text" 
+                data-rating="<%= review.rating %>"></p>
+                <p class="card-text"><%= review.comment %></p>
+              </div>
+              <form 
+              class="mb-3"
+              method="POST"
+              action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" 
+              >
+                <button class="btn btn-sm btn-dark">Delete</button>
+              </form>
+
+            </div>
+            <%}%>
+          </div>
+          <%}%>
+      </div>
+      <div class="col-8 offset-3 mb-3">
+        <h3>Where you'll be</h3>
+        <div id="map"></div>
+      </div>
+  </div>
+     <script src="/js/map.js"></script>
+     <script>document.getElementById("bookingForm").addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent default form submission
+    
+      // const name = document.getElementById("name").value;
+      // const email = document.getElementById("email").value;
+      // const date = document.getElementById("date").value;
+    
+      // console.log(`Name: ${name}, Email: ${email}, Date: ${date}`);
+    
+      // Add your form submission logic here (e.g., sending data to the server)
+      alert("Booking Submitted Successfully!");
+    
+      // Close the modal
+      const modal = document.getElementById("bookingModal");
+      const bootstrapModal = bootstrap.Modal.getInstance(modal);
+      bootstrapModal.hide();
+    });
+    </script>
+
+    
+
+
+
+
+
+
+
+
+
+

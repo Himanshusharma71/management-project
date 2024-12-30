@@ -1,0 +1,141 @@
+<style>
+  .where {
+    font-weight: 700; /* Bold the 'Where' label */
+  }
+
+  .search-field label {
+    font-size: 1.2rem; /* Increase font size */
+    color: #333; /* Darker text color */
+  }
+
+  .thick-border {
+    border-left: 3px solid #333; /* Darker, thick vertical line */
+    padding-left: 10px; /* Space between the line and the content */
+  }
+
+  .search-button {
+    font-size: 1.2rem;
+  }
+
+  .navbar-nav a {
+    font-size: 1.1rem;
+  }
+</style>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
+    <button class="navbar-toggler" type="button" 
+    data-bs-toggle="collapse" 
+    data-bs-target="#navbarNavAltMarkup">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" href="/listings">Explore</a>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="container-search ms-5">
+        <div class="search-bar d-flex justify-content-center align-items-center">
+          <div class="search-field mx-2">
+            <label for="where" class="fw-bolder where" onclick="openModal('where')">Any where</label>
+          </div>
+          <div class="search-field mx-2 thick-border">
+            <label for="checkin" class="fw-bold" onclick="openModal('checkin')">Any week</label>
+          </div>
+          <div class="search-field mx-2 thick-border">
+            <label for="guests" onclick="openModal('guests')">Add guests</label>
+          </div>
+          <button class="search-button btn btn-danger mx-2 rounded-pill">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- User links -->
+      <div class="navbar-nav ms-auto">
+        <a class="nav-link" href="/listings/new">Your Hotel</a>
+        <% if(!currUser){%>
+          <a class="nav-link" href="/signup"><b>Sign up</b></a>
+          <a class="nav-link" href="/login"><b>Log in</b></a>
+        <%}%>
+        <% if(currUser){%>
+        <a class="nav-link" href="/logout"><b>Log out</b></a>
+        <%}%>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Modal for popup form -->
+<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Search Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Form fields -->
+        <form id="searchForm">
+          <div class="mb-3">
+            <label for="modalWhere" class="form-label">Where</label>
+            <input type="text" class="form-control" id="modalWhere" placeholder="Enter destination">
+          </div>
+          <div class="mb-3">
+            <label for="modalCheckin" class="form-label">Check-in</label>
+            <input type="date" class="form-control" id="modalCheckin">
+          </div>
+          <div class="mb-3">
+            <label for="modalCheckout" class="form-label">Check-out</label>
+            <input type="date" class="form-control" id="modalCheckout">
+          </div>
+          <div class="mb-3">
+            <label for="modalGuests" class="form-label">Who (Guests)</label>
+            <input type="number" class="form-control" id="modalGuests" placeholder="Enter number of guests">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="submitForm()">Search</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+  // Function to open the modal and set the appropriate label based on the clicked field
+  function openModal(field) {
+    const modal = new bootstrap.Modal(document.getElementById('searchModal'));
+    modal.show();
+    
+    // Set default values or actions based on the clicked label
+    if (field === 'where') {
+      document.getElementById('modalWhere').focus();
+    } else if (field === 'checkin') {
+      document.getElementById('modalCheckin').focus();
+    } else if (field === 'guests') {
+      document.getElementById('modalGuests').focus();
+    }
+  }
+
+  // Function to handle form submission (for now, just log the values)
+  function submitForm() {
+    const where = document.getElementById('modalWhere').value;
+    const checkin = document.getElementById('modalCheckin').value;
+    const checkout = document.getElementById('modalCheckout').value;
+    const guests = document.getElementById('modalGuests').value;
+
+    console.log('Where:', where);
+    console.log('Check-in:', checkin);
+    console.log('Check-out:', checkout);
+    console.log('Guests:', guests);
+    
+    // You can replace this with actual form submission logic
+    alert('Form submitted!');
+  }
+</script>

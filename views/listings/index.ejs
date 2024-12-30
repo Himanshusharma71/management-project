@@ -1,0 +1,202 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+  .fa-heart {
+    color: rgb(240, 232, 232);
+  
+  }
+  
+  /* Red heart style when clicked */
+  .fa-heart-red {
+    background-color: red;
+    color: red;
+  }
+  #filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter {
+    text-align: center;
+    margin-right: 2rem;
+    margin-top: 2rem;
+    opacity: 0.7;
+  }
+
+  .filter:hover {
+    opacity: 1;
+    cursor: pointer;
+  }
+
+  .filter p {
+    font-size: 0.8rem;
+  }
+
+  .tax-info {
+    display: none;
+  }
+
+  .tax-toggle {
+    border: 1px solid black;
+    border-radius: 1rem;
+    height: 3.5rem;
+    padding: 1rem;
+    margin-left: 1rem;
+    display: flex;
+    align-items: center;
+  }
+</style>
+
+<div id="filters">
+  <div class="filter" data-filter="trending">
+    <div>
+      <i class="fa-solid fa-fire"></i>
+    </div>
+    <p>Trending</p>
+  </div>
+  <div class="filter" data-filter="rooms">
+    <div>
+      <i class="fa-solid fa-bed"></i>
+    </div>
+    <p>Rooms</p>
+  </div>
+  <div class="filter" data-filter="iconic-cities">
+    <div>
+      <i class="fa-solid fa-mountain-city"></i>
+    </div>
+    <p>Iconic Cities</p>
+  </div>
+  <div class="filter" data-filter="castles">
+    <div>
+      <i class="fa-brands fa-fort-awesome"></i>
+    </div>
+    <p>Castles</p>
+  </div>
+  <div class="filter" data-filter="arctic">
+    <div>
+      <i class="fa-solid fa-person-swimming"></i>
+    </div>
+    <p>Arctic</p>
+  </div>
+  <div class="filter" data-filter="camping">
+    <div>
+      <i class="fa-solid fa-campground"></i>
+    </div>
+    <p>Camping</p>
+  </div>
+  <div class="filter" data-filter="farms">
+    <div>
+      <i class="fa-solid fa-cow"></i>
+    </div>
+    <p>Farms</p>
+  </div>
+  <div class="filter" data-filter="beachfront">
+    <div>
+      <i class="fa-solid fa-umbrella-beach"></i>
+    </div>
+    <p>Beachfront</p>
+  </div>
+  <div class="filter" data-filter="amazing-pools">
+    <div>
+      <i class="fa-solid fa-person-swimming"></i>
+    </div>
+    <p>Amazing Pools</p>
+  </div>
+  <div class="filter" data-filter="resorts">
+    <div>
+      <i class="fa-solid fa-hotel"></i>
+    </div>
+    <p>Resorts</p>
+  </div>
+  <div class="filter" data-filter="lakefront">
+    <div>
+      <i class="fa-solid fa-water"></i>
+    </div>
+    <p>Lakefront</p>
+  </div>
+  <div class="filter" data-filter="boathouse">
+    <div>
+      <i class="fa-solid fa-sailboat"></i>
+    </div>
+    <p>Boathouse</p>
+  </div>
+  <div class="tax-toggle">
+    <div class="form-check-reverse form-switch">
+      <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+      <label class="form-check-label" for="flexSwitchCheckDefault">Taxes included</label>
+    </div>
+  </div>
+</div>
+
+<div class="row row-cols-lg-4 row-cols-md-2 row-cols-sm-1 mt-3">
+  <% for (let listing of allListings) { %>
+    <div class="card col listing-card" data-category="<%= (listing.category || '').toLowerCase() %>">
+      <a href="/listings/<%= listing._id %>" class="listing-links">
+        <div class="image-container" style="position: relative;">
+          <img src="<%= listing.image.url %>" class="card-img-top" alt="listing-images" style="height: 20rem;">
+          <i class="fa-regular fa-heart" style="position: absolute; top: 10px; right: 10px; font-size: 2rem; color: white border-white"></i>
+        </div>
+        <div class="card-img-overlay">
+          <h5 class="card-title"></h5>
+          <p class="card-text"></p>
+          <p class="card-text"><small></small></p>
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            <b><%= listing.title %></b> 
+            <br>
+            &#8377; <%= listing.price.toLocaleString("en-IN") %> / night
+            <i class="tax-info"> &nbsp; &nbsp; +18% GST</i>
+          </p>
+        </div>
+      </a>
+    </div>
+  <% } %>
+</div>
+
+
+<script>
+   function toggleHeart(heartIcon) {
+    // Check if the heart is currently red, then remove the red class
+    if (heartIcon.classList.contains('fa-heart-red')) {
+      heartIcon.classList.remove('fa-heart-red');
+      heartIcon.classList.add('fa-heart');
+    } else {
+      // If the heart is not red, add the red class
+      heartIcon.classList.remove('fa-heart');
+      heartIcon.classList.add('fa-heart-red');
+    }
+  }
+
+
+  let taxSwitch = document.getElementById("flexSwitchCheckDefault");
+  taxSwitch.addEventListener("click", () => {
+    let taxInfo = document.getElementsByClassName("tax-info");
+    for (let info of taxInfo) {
+      if (info.style.display !== "inline") {
+        info.style.display = "inline";
+      } else {
+        info.style.display = "none";
+      }
+    }
+  });
+
+  // Filter functionality
+  const filters = document.querySelectorAll('.filter');
+  filters.forEach(filter => {
+    filter.addEventListener('click', () => {
+      let category = filter.getAttribute('data-filter');
+      let cards = document.querySelectorAll('.listing-card');
+
+      cards.forEach(card => {
+        let cardCategory = card.getAttribute('data-category');
+        if (category === 'all' || cardCategory === category) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
